@@ -1,3 +1,7 @@
+
+// 12231948 Lutfi initialized the Next.js project, installed dependencies,
+// attempted to integrate Husky (later removed), and configured Supabase as the cloud database.
+
 import { createClient } from '@supabase/supabase-js'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
