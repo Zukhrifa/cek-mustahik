@@ -5,6 +5,7 @@ const dashboard = () => {
   return (
     <div>
       Halaman Awal
+      King Emyu
     </div>
   )
 }
