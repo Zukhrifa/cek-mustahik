@@ -1,12 +1,13 @@
 //12231948 Lutfi type rafce
 import React from 'react'
 
-const dashboard = () => {
+const page = () => {
   return (
     <div>
-     b
+      a
     </div>
   )
 }
 
-export default dashboard
+export default page
+
