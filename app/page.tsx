@@ -4,7 +4,7 @@ import React from 'react'
 const dashboard = () => {
   return (
     <div>
-      Halaman Awal
+     b
     </div>
   )
 }
