@@ -1,13 +1,16 @@
 //12231948 Lutfi type rafce
-import React from 'react'
 
-const page = () => {
+import Navbar, { MobileSidebar, SidebarProvider } from "@/components/ui/sidebar";
+
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div>
-      a
+    <SidebarProvider>
+    <div className="flex min-h-screen">
+      <MobileSidebar />
+      <Navbar />
+      <main className="">{children}</main>
     </div>
-  )
+    </SidebarProvider>
+  );
 }
-
-export default page
 

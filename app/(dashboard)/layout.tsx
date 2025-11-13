@@ -1,11 +1,15 @@
 import React from 'react'
+import Navbar, { MobileSidebar, SidebarProvider } from "@/components/ui/sidebar";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
+    <SidebarProvider>
     <div className="flex">
-      <aside className="w-64">Sidebar</aside>
-      <main className="flex-1">{children}</main> {/* ini wajib */}
-    </div>
+      <MobileSidebar />
+      <Navbar />
+      <main className="flex-1">{children}</main> {}
+      </div>
+    </SidebarProvider>
   );
 }
 
