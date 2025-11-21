@@ -1,7 +1,7 @@
+//12231945 Bifaqih Zulfa made design for masuk akun page
 'use client';
 
 import React, { useState } from 'react';
-// Asumsi bahwa komponen-komponen ini ada di direktori components/ui/ Anda
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -18,12 +18,8 @@ export default function MasukAkunPage() {
   const handleAuth = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // --- Lakukan Validasi (khusus untuk Halaman Pendaftaran) ---
-    // NOTE: Sesuai permintaan di query sebelumnya, halaman ini dikonfigurasi sebagai halaman Buat Akun (Sign Up) 
-    // karena memiliki 3 input (Username, Password, Konfirmasi Password).
+
     if (password !== confirmPassword) {
-      // NOTE: Mengganti alert() dengan pesan di UI adalah praktik yang lebih baik (menggunakan toast)
-      // Namun, karena kode ini hanya UI, kita tetap menggunakan toast/alert sederhana
       alert("Kata Sandi dan Konfirmasi Kata Sandi tidak cocok."); 
       return;
     }
@@ -31,11 +27,10 @@ export default function MasukAkunPage() {
     // Logic otentikasi akan ditambahkan di sini
     console.log('Mencoba pendaftaran dengan:', { username, password, confirmPassword });
 
-    // TODO: Implementasikan logic autentikasi 
   };
 
   return (
-    // Bagian ini menangani layout pusat (mirip dengan layout.tsx jika ada)
+    // Bagian ini menangani layout pusat (mirip dengan layout.tsx )
     <div className="flex min-h-screen flex-col items-center justify-center p-4 bg-gray-50">
       
       {/* HEADER UTAMA */}
@@ -96,13 +91,11 @@ export default function MasukAkunPage() {
               />
             </div>
 
-
             {/* TOMBOL BUAT AKUN */}
             <Button type="submit" className="w-full mt-6 bg-black hover:bg-gray-800 text-white py-2 rounded-lg">
               Buat Akun
             </Button>
             
-            {/* Link ke halaman masuk akun (login) telah dihapus sesuai permintaan */}
           </form>
         </CardContent>
       </Card>
