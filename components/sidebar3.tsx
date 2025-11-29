@@ -1,3 +1,5 @@
+//12231948 Lutfi made sidebar for tutorial purpose
+
 "use client" 
 
 import { Home, Users, User, FileText, LogOut, Download } from "lucide-react";
@@ -23,7 +25,7 @@ const menuItems = [
   { title: "Profil", url: "/profil", icon: User }, 
 ];
 
-export function AppSidebar() {
+export function AppSidebar2() {
   const pathname = usePathname(); 
   const { state } = useSidebar();
   const collapsed = state === "collapsed";

@@ -1,6 +1,6 @@
 //12231948 Lutfi type rafce
 
-import { AppSidebar } from "@/components/sidebar3";
+import { AppSidebar } from "@/components/sidebar2";
 import Navbar, { MobileSidebar, SidebarProvider } from "@/components/ui/sidebar";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -8,10 +8,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <SidebarProvider>
     <div className="flex min-h-screen">
       <MobileSidebar />
-      <Navbar />
+      <AppSidebar />
       <main className="">{children}</main>
     </div>
     </SidebarProvider>
   );
 }
+
 

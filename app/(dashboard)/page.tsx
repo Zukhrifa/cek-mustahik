@@ -1,5 +1,5 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/sidebar3";
+import { AppSidebar } from "@/components/sidebar2";
 import { Component, Menu } from "lucide-react";
 
 interface MainLayoutProps {
