@@ -1,5 +1,5 @@
 // 12231948 Lutfi made page for panduan zakat
-// 12231945 Bifaqih Zulfa feel free to modify this page
+// 12231945 Bifaqih Zulfa create a zakat guide design 
 
 import React from 'react';
 
