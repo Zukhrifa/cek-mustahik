@@ -1,77 +1,73 @@
-// 12231948 Lutfi made page for panduan zakat
-// dont delete comments
-// 12231949 M.Fauzan I created Logika Penentuan Kelayakan 
+// 12231949 M.Fauzan I created Logika Penentuan Kelayakan
 
 import React from "react";
+// =======================
+// TYPE DATA
+// =======================
+
+export type StatusPekerjaan = 
+  | "TIDAK_BEKERJA"
+  | "TIDAK_TETAP"
+  | "TETAP";
+
+export type HasilKelayakan = 
+  | "MUSTAHIK"
+  | "RENTAN_MISKIN"
+  | "TIDAK_LAYAK";
+
 
 // =======================
-// LOGIKA PENENTUAN KELAYAKAN 
+// LOGIKA PENENTUAN KELAYAKAN (VERSI BARU)
 // =======================
-
-export type StatusPekerjaan = "TIDAK_BEKERJA" | "TIDAK_TETAP" | "TETAP";
-export type KondisiFisik = "NORMAL" | "RENTAN" | "SAKIT"; 
-export type HasilKelayakan = "MUSTAHIK" | "RENTAN_MISKIN" | "TIDAK_LAYAK";
 
 export function cekKelayakan({
   penghasilan,
-  khl,                // Kebutuhan Hidup Layak daerah
   tanggungan,
   pekerjaan,
-  kondisi,
 }: {
   penghasilan: number;
-  khl: number;
   tanggungan: number;
   pekerjaan: StatusPekerjaan;
-  kondisi: KondisiFisik;
 }): HasilKelayakan {
 
-  // ---------- 1. Logika berdasarkan penghasilan ----------
+  /**
+   * =========================
+   * RUMUSAN LOGIKA KELAYAKAN:
+   * =========================
+   * 1. Jika penghasilan < Rp2.500.000 → MUSTAHIK
+   * 2. Jika penghasilan Rp2.500.000 – < Rp4.000.000 → RENTAN MISKIN
+   * 3. Jika penghasilan ≥ Rp4.000.000 → TIDAK LAYAK
+   * 
+   * 4. Jika jumlah tanggungan ≥ 3 orang → status bisa NAIK satu tingkat
+   *    (TIDAK LAYAK → RENTAN, RENTAN → MUSTAHIK)
+   * 
+   * 5. Jika TIDAK MEMILIKI PEKERJAAN → otomatis MUSTAHIK
+   */
+
   let status: HasilKelayakan;
 
-  if (penghasilan < 0.7 * khl) {
+  // 1. Berdasarkan Penghasilan
+  if (penghasilan < 2500000) {
     status = "MUSTAHIK";
-  } else if (penghasilan >= 0.7 * khl && penghasilan < khl) {
+  } else if (penghasilan >= 2500000 && penghasilan < 4000000) {
     status = "RENTAN_MISKIN";
   } else {
     status = "TIDAK_LAYAK";
   }
 
-  // ---------- 2. Pengaruh jumlah tanggungan ----------
-  // Jika borderline, banyak tanggungan → naik kategori
-  if (status === "RENTAN_MISKIN" && tanggungan >= 3) {
-    status = "MUSTAHIK";
+  // 2. Berdasarkan Jumlah Tanggungan
+  if (tanggungan >= 3) {
+    if (status === "TIDAK_LAYAK") {
+      status = "RENTAN_MISKIN";
+    } else if (status === "RENTAN_MISKIN") {
+      status = "MUSTAHIK";
+    }
   }
 
-  // ---------- 3. Stabilitas pekerjaan ----------
+  // 3. Prioritas Tidak Bekerja
   if (pekerjaan === "TIDAK_BEKERJA") {
-    // Tidak bekerja → turunkan status menjadi MUSTAHIK
     status = "MUSTAHIK";
-  } else if (pekerjaan === "TIDAK_TETAP" && status === "TIDAK_LAYAK") {
-    // Jika pekerjaan tidak tetap tetapi borderline → rentan
-    status = "RENTAN_MISKIN";
-  }
-
-  // ---------- 4. Kondisi fisik / kerentanan ----------
-  if (kondisi === "SAKIT") {
-    status = "MUSTAHIK";
-  } else if (kondisi === "RENTAN" && status === "TIDAK_LAYAK") {
-    status = "RENTAN_MISKIN";
   }
 
   return status;
 }
-
-// =======================
-// DEFAULT COMPONENT (boleh kosong)
-// =======================
-
-const Logika = () => {
-  return (
-    <div>
-      <p>Logika penentuan kelayakan</p>
-    </div>
-  );
-};
-
-export default Logika;
