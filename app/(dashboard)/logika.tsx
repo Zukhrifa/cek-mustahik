@@ -1,4 +1,4 @@
-// 12231949 M.Fauzan I created Logika Penentuan Kelayakan
+// 12231949 M.Fauzan I created Logika Penentuan Kelayakan v2
 
 import React from "react";
 // =======================
