@@ -1,4 +1,5 @@
 //12231945 Bifaqih Zulfa made design for buat akun page
+// 12231948 Lutfi made a change /daftar => /buatAkun
 'use client'; 
 import React, { useState } from 'react'; 
 import Link from 'next/link'; 
@@ -103,7 +104,7 @@ Masuk
 <p className="text-sm text-gray-600"> 
 Belum punya akun?{' '} 
 {/* Mengganti ke halaman pendaftaran (misalnya, di /auth/daftar) */} 
-<Link href="/auth/daftar" className="font-bold text-blue-600 
+<Link href="/buatAkun" className="font-bold text-blue-600 
 hover:text-blue-500"> 
 Buat Akun 
 </Link> 

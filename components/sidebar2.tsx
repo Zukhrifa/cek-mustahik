@@ -1,5 +1,5 @@
-//12231949 Fauzzan made sidebar2. psuh via Lutfi because theres error
-
+//12231949 Fauzan made sidebar2. push via Lutfi because theres error
+//12231948 Lutfi edit list, route, etc
 "use client";
 
 import { Home, Users, User, FileText, LogOut } from "lucide-react";
@@ -20,9 +20,9 @@ import {
 } from "@/components/ui/sidebar";
 
 const menuItems = [
-    { title: "Beranda", url: "/", icon: Home },
-    { title: "Profil", url: "/profil", icon: User },
+    { title: "Cek Kelayakan Perseorangan", url: "/mustahik-perseorangan", icon: Home },
     { title: "Cek Kelayakan Data Banyak", url: "/massal", icon: Users },
+    { title: "Profil", url: "/profil", icon: User },
     { title: "Panduan Zakat", url: "/panduanZakat", icon: FileText },
 ];
 
@@ -94,7 +94,7 @@ export function AppSidebar() {
                             <SidebarMenuItem>
                                 <SidebarMenuButton asChild>
                                     <Link
-                                        href="/masuk-akun"
+                                        href="/masukAkun" //12231948 Lutfi made a change
                                         className="flex items-center gap-2 p-3 rounded-lg text-red-600 hover:bg-red-50 transition-colors"
                                     >
                                         <LogOut className="h-4 w-4" />
