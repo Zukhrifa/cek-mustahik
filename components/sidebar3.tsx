@@ -95,7 +95,7 @@ export function AppSidebar2() {
                     className="flex items-center gap-2 p-3 transition-colors rounded-lg text-red-600 hover:bg-red-50"
                   >
                     <LogOut className="h-4 w-4" />
-                    <span>Keluar</span>
+                    <span>Keluar2</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
