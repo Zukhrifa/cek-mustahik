@@ -1,5 +1,4 @@
-//12231948 Lutfi created pages
-//12231945 bifaqih zulfa made profil design
+//12231945 bifaqih zulfa mademade design for profil page
 "use client";
 import React, { useState } from 'react';
 // Import icons from Lucide-React
