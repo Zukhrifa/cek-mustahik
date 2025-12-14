@@ -1,44 +1,46 @@
-//12231945 Bifaqih Zulfa made design for masuk akun page
+//12231948 Lutfi uses Zulfa's buatAkun
+// app/(auth)/buatAkun/page.tsx
+// Register page with Supabase authentication
+
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import { Home } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
 
-// Definisikan komponen utama
-export default function MasukAkunPage() {
+export default function BuatAkunPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  // Tambahkan state untuk Konfirmasi Kata Sandi
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { register, isLoggedIn } = useAuth();
-  const router = useRouter(); 
+  const router = useRouter();
 
+  // Redirect if already logged in
   useEffect(() => {
     if (isLoggedIn) {
       router.push('/mustahik-perseorangan');
     }
   }, [isLoggedIn, router]);
 
-  // Fungsi untuk menangani proses pendaftaran/masuk
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
+    // Validasi
     if (!username || !password || !confirmPassword) {
       toast.error('Semua field harus diisi');
       return;
     }
 
     if (password !== confirmPassword) {
-      alert("Kata Sandi dan Konfirmasi Kata Sandi tidak cocok."); 
+      toast.error('Password dan konfirmasi password tidak sama');
       return;
     }
 
@@ -46,8 +48,7 @@ export default function MasukAkunPage() {
       toast.error('Password minimal 6 karakter');
       return;
     }
-    
-    // Logic otentikasi akan ditambahkan di sini
+
     setIsLoading(true);
 
     try {
@@ -68,16 +69,15 @@ export default function MasukAkunPage() {
   };
 
   return (
-    // Bagian ini menangani layout pusat (mirip dengan layout.tsx )
     <div className="flex min-h-screen flex-col items-center justify-center p-4 bg-gray-50">
-      
       {/* HEADER UTAMA */}
       <header className="text-center mb-8">
         <h1 className="text-3xl font-bold mb-2">
           Aplikasi Penentu Kandidat Mustahik
         </h1>
         <p className="text-gray-600 max-w-md mx-auto">
-          Silakan buat akun untuk mengakses lebih banyak fitur Aplikasi Penentu Kandidat Mustahik
+          Silakan buat akun untuk mengakses lebih banyak fitur Aplikasi Penentu
+          Kandidat Mustahik
         </p>
       </header>
 
