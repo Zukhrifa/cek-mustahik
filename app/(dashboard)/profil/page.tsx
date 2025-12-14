@@ -1,5 +1,8 @@
 //12231948 Lutfi created pages
 //12231945 bifaqih zulfa made profil design
+// app/(dashboard)/profil/page.tsx
+// Profile page with password change and account deletion
+//12231948 Lutfi edits Zulfa's design
 "use client";
 import React, { useState } from 'react';
 // Import icons from Lucide-React
@@ -7,206 +10,265 @@ import {
     User, 
     AlertTriangle, 
     Lock,      
-    Trash2,        
+    Trash2,
+    Database,        
     Info
 } from 'lucide-react'; 
+import { useRouter } from 'next/navigation';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { toast } from 'sonner';
+import { useAuth } from '@/hooks/useAuth';
+import { deleteAllMustahikByUser } from '@/lib/services/mustahikservice';
 
-// --- MODEL DATA: User Profile (Mock Data) ---
-interface UserProfile {
-  namaLengkap: string;
-}
+export default function ProfilPage() {
+  const { user, changePassword, removeAccount } = useAuth();
+  const router = useRouter();
 
-const mockUserProfile: UserProfile = {
-  namaLengkap: 'Nama', // Placeholder name as seen in the image
-};
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
 
-/**
- * Component for the functional sections (grey boxes)
- */
-const FunctionBox: React.FC<{ children: React.ReactNode, className?: string }> = ({ children, className = "" }) => (
-    // Uses bg-gray-200 for the main container, matching the image's shade
-    <div className={`bg-gray-200 p-6 rounded-none ${className}`}>
-        {children}
-    </div>
-);
+  const handleChangePassword = async () => {
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      toast.error('Semua field password harus diisi');
+      return;
+    }
 
-/**
- * Main Profile Settings Page Component
- */
-const ProfilePage: React.FC = () => {
-    const user = mockUserProfile; 
+    if (newPassword !== confirmPassword) {
+      toast.error('Password baru dan konfirmasi tidak cocok');
+      return;
+    }
 
-    // State for password fields (kept static/disabled for this mock interface)
-    const [currentPassword, setCurrentPassword] = useState('');
-    const [newPassword, setNewPassword] = useState('');
-    const [confirmNewPassword, setConfirmNewPassword] = useState('');
+    if (newPassword.length < 6) {
+      toast.error('Password minimal 6 karakter');
+      return;
+    }
 
-    // Placeholder function for disabled buttons
-    const handleAction = (action: string) => {
-        // This is a mock interface, so all actions are logged instead of executed
-        console.log(`Action ${action} is disabled in this mock interface.`);
-    };
+    setIsChangingPassword(true);
 
+    try {
+      const success = await changePassword(currentPassword, newPassword);
+
+      if (success) {
+        setCurrentPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+        toast.success('Password berhasil diubah');
+      } else {
+        toast.error('Password saat ini salah');
+      }
+    } catch (error) {
+      console.error('Change password error:', error);
+      toast.error('Terjadi kesalahan saat mengubah password');
+    } finally {
+      setIsChangingPassword(false);
+    }
+  };
+
+  const handleDeleteData = async () => {
+    if (!user) return;
+
+    try {
+      const response = await deleteAllMustahikByUser(user.id_user);
+
+      if (response.success) {
+        toast.success('Semua data kandidat berhasil dihapus');
+      } else {
+        toast.error(response.message);
+      }
+    } catch (error) {
+      console.error('Delete data error:', error);
+      toast.error('Terjadi kesalahan saat menghapus data');
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      const success = await removeAccount();
+
+      if (success) {
+        toast.success('Akun berhasil dihapus');
+        router.push('/masukAkun');
+      } else {
+        toast.error('Gagal menghapus akun');
+      }
+    } catch (error) {
+      console.error('Delete account error:', error);
+      toast.error('Terjadi kesalahan saat menghapus akun');
+    }
+  };
+
+  if (!user) {
     return (
-        // Main wrapper uses white background as base, centered content
-        <div className="flex flex-col min-h-screen bg-white text-gray-800">
-          
-            {/* HEADER - Wide, dark text, similar to the image's header area */}
-            <header className="w-full border-b border-gray-300 shadow-sm bg-white">
-                <div className="mx-auto max-w-xl p-4 md:p-6">
-                    <h1 className="text-2xl font-bold text-black">
-                        Aplikasi Penentu Kandidat Mustahik
-                    </h1>
-                </div>
-            </header>
-
-            {/* MAIN CONTENT - Centered, fixed width container */}
-            <main className="flex-grow flex justify-center p-4 md:p-6">
-                
-                <div className="w-full max-w-xl space-y-6">
-                    
-                    {/* PROFILE INFORMATION SECTION */}
-                    <div className="mb-6">
-                        <div className="flex items-center space-x-2 text-gray-800 mb-1">
-                            <Info className="w-5 h-5"/>
-                            <p className="font-semibold text-base">Informasi Profil</p>
-                        </div>
-                        <h2 className="text-3xl font-extrabold text-black">
-                            {user.namaLengkap}
-                        </h2>
-                    </div>
-
-
-                    {/* CHANGE PASSWORD SECTION (Grey Box) */}
-                    <FunctionBox>
-                        <div className="flex items-center space-x-2 text-black mb-4">
-                            <Lock className="w-5 h-5"/>
-                            <h3 className="text-lg font-semibold">Ubah Kata Sandi</h3>
-                        </div>
-
-                        <form onSubmit={(e) => { e.preventDefault(); handleAction('Ubah Sandi'); }} className="space-y-4">
-                            
-                            {/* Current Password */}
-                            <div>
-                                <label htmlFor="currentPassword" className="text-sm text-gray-700 block mb-1">
-                                    Kata Sandi Sekarang
-                                </label>
-                                <input
-                                    id="currentPassword"
-                                    type="password"
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-none focus:ring-gray-500 focus:border-gray-500 bg-white cursor-not-allowed"
-                                    value={currentPassword}
-                                    onChange={(e) => setCurrentPassword(e.target.value)}
-                                    disabled 
-                                />
-                            </div>
-
-                            {/* New Password */}
-                            <div>
-                                <label htmlFor="newPassword" className="text-sm text-gray-700 block mb-1">
-                                    Kata Sandi
-                                </label>
-                                <input
-                                    id="newPassword"
-                                    type="password"
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-none focus:ring-gray-500 focus:border-gray-500 bg-white cursor-not-allowed"
-                                    value={newPassword}
-                                    onChange={(e) => setNewPassword(e.target.value)}
-                                    disabled 
-                                />
-                            </div>
-
-                            {/* Confirm New Password */}
-                            <div>
-                                <label htmlFor="confirmNewPassword" className="text-sm text-gray-700 block mb-1">
-                                    Konfirmasi Kata Sandi
-                                </label>
-                                <input
-                                    id="confirmNewPassword"
-                                    type="password"
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-none focus:ring-gray-500 focus:border-gray-500 bg-white cursor-not-allowed"
-                                    value={confirmNewPassword}
-                                    onChange={(e) => setConfirmNewPassword(e.target.value)}
-                                    disabled 
-                                />
-                            </div>
-
-                            {/* Change Password Button (Dark, on the bottom right) */}
-                            <div className="flex justify-end pt-2">
-                                <button 
-                                    type="submit" 
-                                    className="px-6 py-2 bg-gray-800 text-white font-semibold rounded-none transition hover:bg-gray-900 opacity-75 cursor-default"
-                                    disabled 
-                                >
-                                    Ubah Sandi
-                                </button>
-                            </div>
-                        </form>
-                    </FunctionBox>
-
-                    {/* DANGER ZONE (Grey Box) */}
-                    <FunctionBox>
-                        <div className="flex items-center space-x-2 text-black mb-2">
-                            <AlertTriangle className="w-5 h-5"/>
-                            <h3 className="text-lg font-semibold text-black">Berbahaya</h3>
-                        </div>
-                        <p className="text-sm text-gray-600 mb-6">
-                            Tindakan permanen dan tidak dapat diakses setelahnya.
-                        </p>
-                        
-                        <div className="space-y-4">
-                            
-                            {/* Option: Delete Candidate Data */}
-                            <div className="flex items-center justify-between py-2 border-t border-gray-300">
-                                <div className="flex items-start space-x-3">
-                                    <Trash2 className="w-5 h-5 text-gray-700"/>
-                                    <div>
-                                        <p className="font-medium text-black">Hapus Semua Data Kandidat</p>
-                                        <p className="text-xs text-gray-600">Menghapus data kandidat yang tersimpan dalam sistem.</p>
-                                    </div>
-                                </div>
-                                <button 
-                                    className="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-none transition opacity-75 cursor-default hover:bg-red-700"
-                                    disabled
-                                    onClick={() => handleAction('Hapus Data')}
-                                >
-                                    Hapus Data
-                                </button>
-                            </div>
-                            
-                            {/* Option: Delete Account */}
-                            <div className="flex items-center justify-between py-2 border-t border-gray-300">
-                                <div className="flex items-start space-x-3">
-                                    <User className="w-5 h-5 text-gray-700"/>
-                                    <div>
-                                        <p className="font-medium text-black">Hapus Akun</p>
-                                        <p className="text-xs text-gray-600">Menghapus akun dan semua data yang terkait di dalamnya.</p>
-                                    </div>
-                                </div>
-                                <button 
-                                    className="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-none transition opacity-75 cursor-default hover:bg-red-700"
-                                    disabled
-                                    onClick={() => handleAction('Hapus Akun')}
-                                >
-                                    Hapus Akun
-                                </button>
-                            </div>
-                        </div>
-
-                    </FunctionBox>
-
-                </div>
-
-            </main>
-
-            {/* FOOTER - Fixed text on the bottom */}
-            <footer className="w-full border-t border-gray-300 mt-auto bg-white">
-                <div className="mx-auto max-w-xl p-4 text-center text-sm text-gray-800">
-                    Copyright &copy; 2025 - Aplikasi penentu kandidat mustahik
-                </div>
-            </footer>
-        </div>
+      <div className="flex items-center justify-center min-h-[400px]">
+        <p className="text-muted-foreground">Loading...</p>
+      </div>
     );
-};
+  }
 
-export default ProfilePage;
+  return (
+    <div className="mx-auto max-w-3xl space-y-6">
+      {/* Profile Info */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-2 mb-1">
+            <User className="h-5 w-5 text-gray-700" />
+            <CardTitle>Informasi Profil</CardTitle>
+          </div>
+          <CardDescription>Informasi akun Anda</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2">
+            <Label>Username</Label>
+            <div className="text-2xl font-bold text-gray-900">{user.username}</div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Change Password */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-2 mb-1">
+            <Lock className="h-5 w-5 text-gray-700" />
+            <CardTitle>Ubah Password</CardTitle>
+          </div>
+          <CardDescription>Update password akun Anda</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="current-password">Password Saat Ini</Label>
+            <Input
+              id="current-password"
+              type="password"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+              placeholder="Masukkan password saat ini"
+              disabled={isChangingPassword}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="new-password">Password Baru</Label>
+            <Input
+              id="new-password"
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="Masukkan password baru (min. 6 karakter)"
+              disabled={isChangingPassword}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="confirm-password">Konfirmasi Password Baru</Label>
+            <Input
+              id="confirm-password"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Konfirmasi password baru"
+              disabled={isChangingPassword}
+            />
+          </div>
+          <div className="flex justify-end pt-2">
+            <Button 
+              onClick={handleChangePassword} 
+              disabled={isChangingPassword}
+              className="bg-gray-800 hover:bg-gray-900"
+            >
+              {isChangingPassword ? 'Memproses...' : 'Ubah Password'}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Danger Zone */}
+      <Card className="border-red-200">
+        <CardHeader>
+          <div className="flex items-center gap-2 mb-1">
+            <AlertTriangle className="h-5 w-5 text-red-600" />
+            <CardTitle className="text-red-600">Zona Berbahaya</CardTitle>
+          </div>
+          <CardDescription>
+            Tindakan permanen yang tidak dapat dibatalkan
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Delete All Data */}
+          <div className="flex items-center justify-between rounded-lg border border-gray-300 p-4 bg-gray-50">
+            <div className="space-y-1 flex-1">
+              <div className="flex items-center gap-2">
+                <Database className="h-4 w-4 text-gray-700" />
+                <h4 className="font-semibold text-gray-900">Hapus Semua Data Kandidat</h4>
+              </div>
+              <p className="text-sm text-gray-600">
+                Menghapus semua data kandidat yang tersimpan dalam sistem
+              </p>
+            </div>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="outline" className="border-red-600 text-red-600 hover:bg-red-50 ml-4">
+                  Hapus Data
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Konfirmasi Hapus Data</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Apakah Anda yakin ingin menghapus semua data kandidat? Tindakan ini tidak dapat dibatalkan.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Batal</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleDeleteData} className="bg-red-600 hover:bg-red-700">
+                    Hapus Semua Data
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+
+          <Separator />
+
+          {/* Delete Account */}
+          <div className="flex items-center justify-between rounded-lg border border-gray-300 p-4 bg-gray-50">
+            <div className="space-y-1 flex-1">
+              <div className="flex items-center gap-2">
+                <Trash2 className="h-4 w-4 text-gray-700" />
+                <h4 className="font-semibold text-gray-900">Hapus Akun</h4>
+              </div>
+              <p className="text-sm text-gray-600">
+                Menghapus akun dan semua data yang terkait secara permanen
+              </p>
+            </div>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" className="ml-4">
+                  Hapus Akun
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Konfirmasi Hapus Akun</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Apakah Anda yakin ingin menghapus akun ini? Semua data akan dihapus secara permanen dan tidak dapat dipulihkan.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Batal</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleDeleteAccount} className="bg-red-600 hover:bg-red-700">
+                    Ya, Hapus Akun
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
