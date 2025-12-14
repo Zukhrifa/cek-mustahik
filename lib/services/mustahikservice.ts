@@ -8,7 +8,7 @@ import { Mustahik, MustahikCreateInput, MustahikUpdateInput } from '@/lib/types/
 export interface MustahikResponse {
   success: boolean
   message: string
-  data?: Mustahik | Mustahik[]
+  data?: Partial<Mustahik> | Partial<Mustahik>[];
 }
 
 // Create mustahik (untuk bulk check)
@@ -18,6 +18,7 @@ export const createMustahik = async (input: MustahikCreateInput): Promise<Mustah
       .from('mustahik')
       .insert({
         id_user: input.id_user,
+        nama: input.nama,
         penghasilan: input.penghasilan,
         pekerjaan: input.pekerjaan,
         jml_tanggungan: input.jml_tanggungan,
@@ -39,7 +40,7 @@ export const createMustahik = async (input: MustahikCreateInput): Promise<Mustah
     return {
       success: true,
       message: 'Data mustahik berhasil disimpan',
-      data
+      data: data as Mustahik
     }
   } catch (error) {
     console.error('Create mustahik error:', error)
@@ -57,6 +58,7 @@ export const createBulkMustahik = async (inputs: MustahikCreateInput[]): Promise
       .from('mustahik')
       .insert(inputs.map(input => ({
         id_user: input.id_user,
+        nama: input.nama,
         penghasilan: input.penghasilan,
         pekerjaan: input.pekerjaan,
         jml_tanggungan: input.jml_tanggungan,
@@ -77,7 +79,7 @@ export const createBulkMustahik = async (inputs: MustahikCreateInput[]): Promise
     return {
       success: true,
       message: `${data.length} data mustahik berhasil disimpan`,
-      data
+      data: data as Mustahik[]
     }
   } catch (error) {
     console.error('Create bulk mustahik error:', error)
@@ -108,7 +110,7 @@ export const getMustahikByUser = async (userId: number): Promise<MustahikRespons
     return {
       success: true,
       message: 'Data mustahik berhasil diambil',
-      data
+      data: data as Mustahik[]
     }
   } catch (error) {
     console.error('Get mustahik error:', error)
@@ -139,7 +141,7 @@ export const getMustahikById = async (id: number): Promise<MustahikResponse> => 
     return {
       success: true,
       message: 'Data mustahik berhasil diambil',
-      data
+      data: data as Mustahik
     }
   } catch (error) {
     console.error('Get mustahik by id error:', error)
@@ -174,7 +176,7 @@ export const updateMustahik = async (
     return {
       success: true,
       message: 'Data mustahik berhasil diupdate',
-      data
+      data: data as Mustahik
     }
   } catch (error) {
     console.error('Update mustahik error:', error)

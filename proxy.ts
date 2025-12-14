@@ -1,6 +1,6 @@
 //12231948 Lutfi made middleware
 
-// middleware.ts
+// middleware.ts convert to proxy.ts due to next.js new 
 // Next.js Middleware untuk route protection
 
 import { NextResponse } from 'next/server'
@@ -18,7 +18,7 @@ const authRoutes = [
   '/buatAkun',
 ]
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
   
   // Check if user is logged in by checking cookie/localStorage
