@@ -7,14 +7,11 @@
 import { createClient } from '@supabase/supabase-js'
 import { Database } from '@/lib/types/database.types'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+// Gunakan NEXT_PUBLIC agar bisa diakses di client-side
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ''
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables')
-}
-
-// Client untuk browser
+// Inisialisasi Supabase client
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   auth: {
     persistSession: true,
@@ -24,13 +21,13 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   },
 })
 
-// Helper function untuk cek auth status
+// Helper: cek apakah user sudah login
 export const isAuthenticated = async () => {
   const { data: { session } } = await supabase.auth.getSession()
   return !!session
 }
 
-// Helper function untuk get current user
+// Helper: ambil user aktif
 export const getCurrentUser = async () => {
   const { data: { session } } = await supabase.auth.getSession()
   return session?.user ?? null
