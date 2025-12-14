@@ -6,12 +6,11 @@ interface MainLayoutProps {
   children: React.ReactNode;
 }
 
-export function MainLayout({ children }: MainLayoutProps) {
+export default function MainLayout({ children }: MainLayoutProps) {
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full">
         <AppSidebar />
-        
         <div className="flex-1 flex flex-col w-full">
           <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b bg-card px-4 lg:px-6">
             <SidebarTrigger className="lg:hidden">
@@ -23,10 +22,7 @@ export function MainLayout({ children }: MainLayoutProps) {
               </h1>
             </div>
           </header>
-          
-          <main className="flex-1 p-4 lg:p-6">
-            {children}
-          </main>
+          <main className="flex-1 p-4 lg:p-6">{children}</main>
         </div>
       </div>
     </SidebarProvider>
