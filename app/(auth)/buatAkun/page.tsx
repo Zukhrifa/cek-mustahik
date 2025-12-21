@@ -91,47 +91,55 @@ export default function MasukAkunPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleAuth} className="space-y-6">
-            {/* INPUT USERNAME */}
-            <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
-              <Input
-                id="username"
-                type="text"
-                placeholder="Masukkan username"
-                required
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                disabled={isLoading}
-              />
-            </div>
+    
 
-            {/* INPUT PASSWORD */}
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Minimal 6 karakter"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={isLoading}
-              />
-            </div>
+{/* INPUT USERNAME */}
+<div className="space-y-2">
+  <Label htmlFor="username">Username</Label>
+  <Input
+    id="username"
+    name="username"  
+    type="text"
+    placeholder="Masukkan username"
+    required
+    value={username}
+    onChange={(e) => setUsername(e.target.value)}
+    disabled={isLoading}
+    autoComplete="username"  
+  />
+</div>
 
-            {/* INPUT KONFIRMASI PASSWORD */}
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Konfirmasi Password</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                placeholder="Ulangi password"
-                required
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                disabled={isLoading}
-              />
-            </div>
+{/* INPUT PASSWORD */}
+<div className="space-y-2">
+  <Label htmlFor="password">Password</Label>
+  <Input
+    id="password"
+    name="password"  
+    type="password"
+    placeholder="Minimal 6 karakter"
+    required
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+    disabled={isLoading}
+    autoComplete="new-password"  
+  />
+</div>
+
+{/* INPUT KONFIRMASI PASSWORD */}
+<div className="space-y-2">
+  <Label htmlFor="confirmPassword">Konfirmasi Password</Label>
+  <Input
+    id="confirmPassword"
+    name="confirmPassword"  
+    type="password"
+    placeholder="Ulangi password"
+    required
+    value={confirmPassword}
+    onChange={(e) => setConfirmPassword(e.target.value)}
+    disabled={isLoading}
+    autoComplete="new-password"  
+  />
+</div>
 
             {/* TOMBOL BUAT AKUN */}
             <Button
