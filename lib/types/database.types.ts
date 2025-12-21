@@ -1,6 +1,5 @@
-//12231948 Lutfi maade database types
 // lib/types/database.types.ts
-// TypeScript types berdasarkan Supabase schema
+// UPDATED: Tambahkan kolom 'nama'
 
 export type Json =
   | string
@@ -35,6 +34,7 @@ export interface Database {
         Row: {
           id_mustahik: number
           id_user: number
+          nama: string  // ✅ TAMBAHKAN INI
           penghasilan: number
           pekerjaan: string
           jml_tanggungan: number
@@ -47,6 +47,7 @@ export interface Database {
         Insert: {
           id_mustahik?: number
           id_user: number
+          nama: string  // ✅ TAMBAHKAN INI
           penghasilan: number
           pekerjaan: string
           jml_tanggungan: number
@@ -59,6 +60,7 @@ export interface Database {
         Update: {
           id_mustahik?: number
           id_user?: number
+          nama?: string  // ✅ TAMBAHKAN INI
           penghasilan?: number
           pekerjaan?: string
           jml_tanggungan?: number

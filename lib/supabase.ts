@@ -1,20 +1,12 @@
-
-// 12231948 Lutfi initialized the Next.js project, installed dependencies,
-// attempted to integrate Husky (later removed), and configured Supabase as the cloud database.
 // lib/supabase.ts
-// Supabase Client Configuration (Simple Version - No env.ts needed)
+// Vercel-compatible version with placeholder fallback
 
 import { createClient } from '@supabase/supabase-js'
 import { Database } from '@/lib/types/database.types'
 
-//  Langsung baca dari process.env dengan fallback empty string
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
-
-//  Runtime validation (akan error di browser jika env kosong)
-if (typeof window !== 'undefined' && (!supabaseUrl || !supabaseAnonKey)) {
-  console.error('Missing Supabase environment variables!')
-}
+// ✅ Use placeholder to prevent build errors
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co'
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBsYWNlaG9sZGVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NDUxOTI4MDAsImV4cCI6MTk2MDc2ODgwMH0.placeholder'
 
 // Create client
 export const supabase = createClient<Database>(
@@ -29,6 +21,16 @@ export const supabase = createClient<Database>(
     },
   }
 )
+
+// Runtime validation - only warn in browser if using placeholder
+if (typeof window !== 'undefined') {
+  if (supabaseUrl === 'https://placeholder.supabase.co') {
+    console.error('⚠️ SUPABASE_URL is missing! Check Vercel Environment Variables.')
+  }
+  if (supabaseAnonKey.includes('placeholder')) {
+    console.error('⚠️ SUPABASE_ANON_KEY is missing! Check Vercel Environment Variables.')
+  }
+}
 
 // Helper functions
 export const isAuthenticated = async () => {

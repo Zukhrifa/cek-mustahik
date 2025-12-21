@@ -2,7 +2,7 @@
 //12231948 Lutfi edit list, route, etc
 // components/sidebar2.tsx
 // Sidebar with auth integration
-//122348 Lutfi edit
+//122348 Lutfi edit route
 
 "use client";
 
@@ -51,7 +51,7 @@ export function AppSidebar() {
   const handleLogout = () => {
     logout();
     toast.success("Berhasil logout");
-    router.push("/masukAkun");
+    router.push("/mustahik-perseorangan"); //lutfi edit this
   };
 
   return (
