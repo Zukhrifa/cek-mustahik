@@ -1,14 +1,23 @@
 // lib/supabase.ts
-// Vercel-compatible version with placeholder fallback
+// Debug version to check connection
+//12231948 lutfi edits
 
 import { createClient } from '@supabase/supabase-js'
 import { Database } from '@/lib/types/database.types'
 
-// ✅ Use placeholder to prevent build errors
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co'
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBsYWNlaG9sZGVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NDUxOTI4MDAsImV4cCI6MTk2MDc2ODgwMH0.placeholder'
 
-// Create client
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://PLACEHOLDER-CHANGE-IN-VERCEL.supabase.co'
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'PLACEHOLDER_KEY_SET_IN_VERCEL_ENVIRONMENT_VARIABLES'
+
+// 🔍 DEBUG: Log connection info (only in browser)
+if (typeof window !== 'undefined') {
+  console.log('🔍 Supabase Connection Debug:')
+  console.log('URL:', supabaseUrl)
+  console.log('Key (first 20 chars):', supabaseAnonKey.substring(0, 20) + '...')
+  console.log('Is Placeholder URL?', supabaseUrl === 'https://placeholder.supabase.co')
+  console.log('Is Placeholder Key?', supabaseAnonKey.includes('placeholder'))
+}
+
 export const supabase = createClient<Database>(
   supabaseUrl, 
   supabaseAnonKey, 
@@ -22,17 +31,16 @@ export const supabase = createClient<Database>(
   }
 )
 
-// Runtime validation - only warn in browser if using placeholder
+// Runtime validation
 if (typeof window !== 'undefined') {
   if (supabaseUrl === 'https://placeholder.supabase.co') {
-    console.error('⚠️ SUPABASE_URL is missing! Check Vercel Environment Variables.')
+    console.error('❌ SUPABASE_URL is PLACEHOLDER! Check Vercel Environment Variables.')
   }
   if (supabaseAnonKey.includes('placeholder')) {
-    console.error('⚠️ SUPABASE_ANON_KEY is missing! Check Vercel Environment Variables.')
+    console.error('❌ SUPABASE_ANON_KEY is PLACEHOLDER! Check Vercel Environment Variables.')
   }
 }
 
-// Helper functions
 export const isAuthenticated = async () => {
   const { data: { session } } = await supabase.auth.getSession()
   return !!session
