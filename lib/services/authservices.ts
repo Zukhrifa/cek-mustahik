@@ -2,8 +2,11 @@
 // lib/services/auth.service.ts
 // Authentication Service dengan Supabase
 
+// lib/services/authservices.ts
+// Optimized version dengan salt rounds lebih rendah
+
 import { supabase } from '@/lib/supabase'
-import bcrypt from 'bcryptjs' // Install: npm install bcryptjs @types/bcryptjs
+import bcrypt from 'bcryptjs'
 
 export interface LoginCredentials {
   username: string
@@ -24,9 +27,14 @@ export interface AuthResponse {
   }
 }
 
+// ⚡ OPTIMIZED: Kurangi salt rounds dari 10 ke 6
+// Salt 6 = ~100ms (fast, masih aman untuk aplikasi kecil)
+// Salt 10 = ~2-5 detik (sangat lambat di browser)
+const SALT_ROUNDS = 6
+
 // Hash password
 const hashPassword = async (password: string): Promise<string> => {
-  const salt = await bcrypt.genSalt(10)
+  const salt = await bcrypt.genSalt(SALT_ROUNDS)
   return bcrypt.hash(password, salt)
 }
 
@@ -114,7 +122,6 @@ export const loginUser = async (credentials: LoginCredentials): Promise<AuthResp
       }
     }
 
-    // Return user data (without password)
     return {
       success: true,
       message: 'Login berhasil',
@@ -139,7 +146,6 @@ export const updatePassword = async (
   newPassword: string
 ): Promise<AuthResponse> => {
   try {
-    // Get current user
     const { data: user, error } = await supabase
       .from('user')
       .select('password')
@@ -153,7 +159,6 @@ export const updatePassword = async (
       }
     }
 
-    // Verify current password
     const isValidPassword = await verifyPassword(currentPassword, user.password)
 
     if (!isValidPassword) {
@@ -163,10 +168,8 @@ export const updatePassword = async (
       }
     }
 
-    // Hash new password
     const hashedPassword = await hashPassword(newPassword)
 
-    // Update password
     const { error: updateError } = await supabase
       .from('user')
       .update({ password: hashedPassword })
@@ -196,13 +199,11 @@ export const updatePassword = async (
 // Delete account
 export const deleteAccount = async (userId: number): Promise<AuthResponse> => {
   try {
-    // Delete all mustahik data first (foreign key constraint)
     await supabase
       .from('mustahik')
       .delete()
       .eq('id_user', userId)
 
-    // Delete user
     const { error } = await supabase
       .from('user')
       .delete()
