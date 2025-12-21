@@ -1,5 +1,6 @@
 // 12231948 Lutfi made page for panduan zakat
 // 12231945 Bifaqih Zulfa create a zakat guide design 
+//12231948 lutfi edits some
 
 import React from 'react';
 
@@ -77,7 +78,7 @@ const PanduanZakatPage: React.FC = () => {
       <header className="w-full bg-white shadow-md border-b border-gray-200">
         <div className="container mx-auto p-4 flex justify-between items-center h-20">
           <h1 className="text-xl md:text-2xl font-bold text-gray-800">
-            Aplikasi Penentu Kandidat Mustahik
+            Informasi Seputar Mustahik dan Zakat 
           </h1>
         </div>
       </header>
@@ -127,7 +128,7 @@ const PanduanZakatPage: React.FC = () => {
       {/* FOOTER */}
       <footer className="w-full bg-white border-t border-gray-200 mt-10">
         <div className="container mx-auto p-4 text-center text-sm text-gray-500">
-          Copyright &copy; 2025 - Aplikasi penentu kandidat mustahik
+          
         </div>
       </footer>
     </div>

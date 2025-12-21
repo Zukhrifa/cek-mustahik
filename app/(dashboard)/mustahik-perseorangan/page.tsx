@@ -203,23 +203,44 @@ export default function MustahikPerseoranganPage() {
             </div>
 
             {/* Result Display */}
-            {result && (
-              <Alert className={result.eligible ? "border-green-500 bg-green-50" : "border-red-500 bg-red-50"}>
-                <div className="flex items-start gap-3">
-                  {result.eligible ? (
-                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
-                  ) : (
-                    <XCircle className="h-5 w-5 text-red-600 mt-0.5" />
-                  )}
-                  <div className="flex-1">
-                    <h4 className="font-semibold mb-1">
-                      {result.eligible ? "✓ Layak Menerima Bantuan" : "✗ Tidak Layak"}
-                    </h4>
-                    <AlertDescription className="text-sm">{result.message}</AlertDescription>
-                  </div>
-                </div>
-              </Alert>
-            )}
+
+{result && (
+  <div 
+    className={`
+      rounded-lg border p-4 w-full
+      ${result.eligible 
+        ? "border-green-500 bg-green-50" 
+        : "border-red-500 bg-red-50"
+      }
+    `}
+  >
+    <div className="flex gap-3 w-full">
+      {result.eligible ? (
+        <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+      ) : (
+        <XCircle className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
+      )}
+      <div className="flex-1 w-full overflow-hidden">
+        <h4 className="font-semibold mb-2 text-base">
+          {result.eligible ? "✓ Layak Menerima Bantuan" : "✗ Tidak Layak"}
+        </h4>
+        <p 
+          className="text-sm text-gray-700 leading-relaxed"
+          style={{
+            whiteSpace: 'normal',
+            wordWrap: 'break-word',
+            overflowWrap: 'break-word',
+            wordBreak: 'break-word',
+            width: '100%',
+            maxWidth: '100%'
+          }}
+        >
+          {result.message}
+        </p>
+      </div>
+    </div>
+  </div>
+)}
 
             {/* Action Buttons */}
             <div className="flex gap-4">
