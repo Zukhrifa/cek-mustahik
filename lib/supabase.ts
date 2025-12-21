@@ -1,13 +1,15 @@
 // lib/supabase.ts
 // Debug version to check connection
 //12231948 lutfi edits
+//edit again
 
 import { createClient } from '@supabase/supabase-js'
 import { Database } from '@/lib/types/database.types'
 
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co'
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhxZ3preGhicHNweXpkbHBrZGdxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIzMzg2MjUsImV4cCI6MjA3NzkxNDYyNX0.yy4iRiJyiWFCSy_Wd5iSS8A2OHeor3CqDfUQKWyJRdo'
+// ⚠️ INI PLACEHOLDER, BUKAN NILAI REAL ANDA!
+// Nilai real diambil dari Vercel Environment Variables
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://PLACEHOLDER-CHANGE-IN-VERCEL.supabase.co'
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'PLACEHOLDER_KEY_SET_IN_VERCEL_ENVIRONMENT_VARIABLES'
 
 // 🔍 DEBUG: Log connection info (only in browser)
 if (typeof window !== 'undefined') {
