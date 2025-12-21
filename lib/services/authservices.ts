@@ -4,6 +4,7 @@
 
 // lib/services/authservices.ts
 // Optimized version dengan salt rounds lebih rendah
+// Add detailed error logging
 
 import { supabase } from '@/lib/supabase'
 import bcrypt from 'bcryptjs'
@@ -27,18 +28,13 @@ export interface AuthResponse {
   }
 }
 
-// ⚡ OPTIMIZED: Kurangi salt rounds dari 10 ke 6
-// Salt 6 = ~100ms (fast, masih aman untuk aplikasi kecil)
-// Salt 10 = ~2-5 detik (sangat lambat di browser)
 const SALT_ROUNDS = 6
 
-// Hash password
 const hashPassword = async (password: string): Promise<string> => {
   const salt = await bcrypt.genSalt(SALT_ROUNDS)
   return bcrypt.hash(password, salt)
 }
 
-// Verify password
 const verifyPassword = async (password: string, hash: string): Promise<boolean> => {
   return bcrypt.compare(password, hash)
 }
@@ -46,22 +42,42 @@ const verifyPassword = async (password: string, hash: string): Promise<boolean> 
 // Register user
 export const registerUser = async (data: RegisterData): Promise<AuthResponse> => {
   try {
+    console.log('🔍 Register attempt:', { username: data.username })
+
     // Check if username already exists
-    const { data: existingUser } = await supabase
+    // ⚠️ PENTING: Jangan pakai .single() karena akan error jika tidak ada data
+    const { data: existingUsers, error: checkError } = await supabase
       .from('user')
       .select('username')
       .eq('username', data.username)
-      .single()
 
-    if (existingUser) {
+    console.log('🔍 Existing user check:', { 
+      found: existingUsers && existingUsers.length > 0, 
+      count: existingUsers?.length,
+      error: checkError 
+    })
+
+    // Jika ada error selain "not found", return error
+    if (checkError) {
+      console.error('❌ Database check error:', checkError)
+      return {
+        success: false,
+        message: `Error checking username: ${checkError.message}`
+      }
+    }
+
+    // Jika username sudah ada (array tidak kosong)
+    if (existingUsers && existingUsers.length > 0) {
+      console.log('⚠️ Username already exists')
       return {
         success: false,
         message: 'Username sudah terdaftar'
       }
     }
 
-    // Hash password
+    console.log('✅ Username available, hashing password...')
     const hashedPassword = await hashPassword(data.password)
+    console.log('✅ Password hashed')
 
     // Insert new user
     const { data: newUser, error } = await supabase
@@ -73,24 +89,27 @@ export const registerUser = async (data: RegisterData): Promise<AuthResponse> =>
       .select('id_user, username')
       .single()
 
+    console.log('🔍 Insert result:', { newUser, error })
+
     if (error) {
-      console.error('Register error:', error)
+      console.error('❌ Insert error:', error)
       return {
         success: false,
-        message: 'Gagal membuat akun'
+        message: `Gagal membuat akun: ${error.message}`
       }
     }
 
+    console.log('✅ Registration successful!')
     return {
       success: true,
       message: 'Akun berhasil dibuat',
       user: newUser
     }
   } catch (error) {
-    console.error('Register error:', error)
+    console.error('❌ Register exception:', error)
     return {
       success: false,
-      message: 'Terjadi kesalahan saat membuat akun'
+      message: `Terjadi kesalahan: ${error instanceof Error ? error.message : 'Unknown error'}`
     }
   }
 }
@@ -98,6 +117,8 @@ export const registerUser = async (data: RegisterData): Promise<AuthResponse> =>
 // Login user
 export const loginUser = async (credentials: LoginCredentials): Promise<AuthResponse> => {
   try {
+    console.log('🔍 Login attempt:', { username: credentials.username })
+
     // Get user by username
     const { data: user, error } = await supabase
       .from('user')
@@ -105,23 +126,39 @@ export const loginUser = async (credentials: LoginCredentials): Promise<AuthResp
       .eq('username', credentials.username)
       .single()
 
-    if (error || !user) {
+    console.log('🔍 User lookup:', { found: !!user, error })
+
+    if (error) {
+      console.error('❌ User lookup error:', error)
+      return {
+        success: false,
+        message: error.code === 'PGRST116' 
+          ? 'Username atau password salah' 
+          : `Error: ${error.message}`
+      }
+    }
+
+    if (!user) {
+      console.log('⚠️ User not found')
       return {
         success: false,
         message: 'Username atau password salah'
       }
     }
 
-    // Verify password
+    console.log('✅ User found, verifying password...')
     const isValidPassword = await verifyPassword(credentials.password, user.password)
+    console.log('🔍 Password valid:', isValidPassword)
 
     if (!isValidPassword) {
+      console.log('⚠️ Invalid password')
       return {
         success: false,
         message: 'Username atau password salah'
       }
     }
 
+    console.log('✅ Login successful!')
     return {
       success: true,
       message: 'Login berhasil',
@@ -131,10 +168,10 @@ export const loginUser = async (credentials: LoginCredentials): Promise<AuthResp
       }
     }
   } catch (error) {
-    console.error('Login error:', error)
+    console.error('❌ Login exception:', error)
     return {
       success: false,
-      message: 'Terjadi kesalahan saat login'
+      message: `Terjadi kesalahan: ${error instanceof Error ? error.message : 'Unknown error'}`
     }
   }
 }

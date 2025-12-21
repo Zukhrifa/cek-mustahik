@@ -86,33 +86,38 @@ export default function MasukAkunPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Input Username */}
-            <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
-              <Input
-                id="username"
-                type="text"
-                placeholder="Masukkan username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                disabled={isLoading}
-                required
-              />
-            </div>
 
-            {/* Input Password */}
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Masukkan password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={isLoading}
-                required
-              />
-            </div>
+{/* Input Username */}
+<div className="space-y-2">
+  <Label htmlFor="username">Username</Label>
+  <Input
+    id="username"
+    name="username"  // ← Tambahkan ini
+    type="text"
+    placeholder="Masukkan username"
+    value={username}
+    onChange={(e) => setUsername(e.target.value)}
+    disabled={isLoading}
+    required
+    autoComplete="username"  // ← Tambahkan ini
+  />
+</div>
+
+{/* Input Password */}
+<div className="space-y-2">
+  <Label htmlFor="password">Password</Label>
+  <Input
+    id="password"
+    name="password"  // ← Tambahkan ini
+    type="password"
+    placeholder="Masukkan password"
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+    disabled={isLoading}
+    required
+    autoComplete="current-password"  // ← Tambahkan ini
+  />
+</div>
 
             {/* Tombol Masuk */}
             <Button
